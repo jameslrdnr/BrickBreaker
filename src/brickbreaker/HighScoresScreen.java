@@ -75,7 +75,7 @@ public class HighScoresScreen extends AbstractScreen implements Comparator<Strin
     }
 
     @Override
-    public void drawGame(Graphics2D g) {
+    public void drawGame(Graphics g) {
         
         //Make a black background to draw onto
         g.setColor(Color.BLACK);
@@ -213,4 +213,9 @@ public class HighScoresScreen extends AbstractScreen implements Comparator<Strin
 
     @Override
     public void mouseMoved(MouseEvent e) {}
+
+    @Override
+    public void handleInput(ArrayList<KeyEvent> inputList) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }
