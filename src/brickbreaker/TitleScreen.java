@@ -116,7 +116,10 @@ public class TitleScreen extends AbstractScreen{
     
     public void handleInput(ArrayList<KeyEvent> inputList){
         
-        for(KeyEvent ke : inputList){
+        //copies input list to new list so it is not changed as it parses the input
+        ArrayList<KeyEvent> inputListCopy = inputList;
+        
+        for(KeyEvent ke : inputListCopy){
             //gives input to screen objects
             for (AbstractScreenObject ob : getObjectsArray()) {
                 ob.inputHandler(getInputMethod(), ke);
