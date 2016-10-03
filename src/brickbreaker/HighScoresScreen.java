@@ -25,6 +25,7 @@ import java.util.Comparator;
 //import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import screenObjects.Debug;
 
 /**
  *
@@ -44,6 +45,7 @@ public class HighScoresScreen extends AbstractScreen implements Comparator<Strin
     private String playerName;
     private ArrayList<String> scoresList;
     private BufferedImage background;
+    
             
     //Default constructor called from menu and only displays previous scores
     //------------------------------------------------------------------
@@ -111,19 +113,23 @@ public class HighScoresScreen extends AbstractScreen implements Comparator<Strin
     //------------------------------------------------------------------
     @Override
     public void keyReleased(KeyEvent e) {
-        //System.out.print("Key Typed");
-        int key = e.getKeyCode();
         
-        //Except input if typing
+        //for characters such as numbers and letters
+        int keyChar = e.getKeyChar();
+        
+        //for special keys
+        int keyCode = e.getKeyCode();
+        
+        //Accept input if typing
         //------------------------------------------------------------------
         if(typing){
-            if(key == KeyEvent.VK_BACK_SPACE){
+            if(keyCode == KeyEvent.VK_BACK_SPACE && playerName.length() > 0){
                 playerName = playerName.substring(0, playerName.length()-1);
               if(getEnableMasterDebug()){
                   System.out.println("BackSpace");
               }
             }
-            else if(key == KeyEvent.VK_ENTER){
+            else if(keyCode == KeyEvent.VK_ENTER){
                 typing = false;
                 scoresList.add(currentScore + " " + playerName);
                 writeScores();
@@ -132,30 +138,45 @@ public class HighScoresScreen extends AbstractScreen implements Comparator<Strin
                   System.out.println("Enter");
               }
             }
-            else if(Character.isLetterOrDigit(key) && playerName.length() < maxNameSize){
-                playerName += (char)key;
+            else if((Character.isUpperCase(keyChar) || Character.isLowerCase(keyChar) || Character.isDigit(keyChar)) && playerName.length() < maxNameSize){
+                playerName += (char)keyChar;
 
               if(getEnableMasterDebug()){
-                  System.out.println("" + (char)key);
+                  System.out.println("" + (char)keyChar);
               }                
             }
         }
-        if(key == KeyEvent.VK_F10){
+        
+        //Screen changing
+        //------------------------------------------------------------------
+        if(keyCode == KeyEvent.VK_F10){
             //enter playgame with or without saving
+            setNextScreen('P');
             
-            
-              if(getEnableMasterDebug()){
-                  System.out.println("" + (char)key);
-              }  
+            if(getEnableMasterDebug()){
+                  System.out.println("F10");
+            }  
             
         }
-        if(key == KeyEvent.VK_ESCAPE){
-            //enter mainMenu with or without saving\
+        if(keyCode == KeyEvent.VK_ESCAPE){
+            //enter mainMenu with or without saving
+            setNextScreen('T');
             
+            if(getEnableMasterDebug()){
+                System.out.println("Escape");
+            }  
+        }
+        
+        //Screen changing
+        //------------------------------------------------------------------
+        if(keyCode == KeyEvent.VK_F3){
+            //enable debug
+            setEnableMasterDebug(!getEnableMasterDebug());
             
-              if(getEnableMasterDebug()){
-                  System.out.println("" + (char)key);
-              }  
+            if(getEnableMasterDebug()){
+                  System.out.println("F3");
+            }  
+            
         }
     }
     
@@ -170,10 +191,16 @@ public class HighScoresScreen extends AbstractScreen implements Comparator<Strin
     //------------------------------------------------------------------
     @Override
     public int compare(String o1, String o2) {
+        
+        //o1 score > o2 score
         if(Integer.parseInt(o1.substring(0, o1.indexOf(' '))) > Integer.parseInt(o2.substring(0, o1.indexOf(' '))) ){
             return 1;
         }
+        
+        //o1 score = o2 score
         else if(Integer.parseInt(o1.substring(0, o1.indexOf(' '))) == Integer.parseInt(o2.substring(0, o1.indexOf(' '))) ){
+            
+            //sort by  name alphabetically
             if(o1.substring(o1.indexOf(' '), o1.length()).compareTo(o2.substring(o2.indexOf(' '), o2.length())) > 0)
                 return -1;
             else if(o1.substring(o1.indexOf(' ')).compareTo(o2.substring(o2.indexOf(' '))) < 0)
@@ -181,9 +208,13 @@ public class HighScoresScreen extends AbstractScreen implements Comparator<Strin
             else
                 return 0;
         }
+        
+        //o1 score < o2 score
         else if(Integer.parseInt(o1.substring(0, o1.indexOf(' '))) < Integer.parseInt(o2.substring(0, o1.indexOf(' '))) ){
             return -1;
         }
+        
+        //somoething messed up if you get here
         else{
             throw new Error("compare has failed with o1 - " + o1 + " and o2 - " + o2);
         }
@@ -256,6 +287,4 @@ public class HighScoresScreen extends AbstractScreen implements Comparator<Strin
     @Override
     public void mouseMoved(MouseEvent e) {}
 
-    @Override
-    public void handleInput(ArrayList<KeyEvent> inputList) {}
 }
